@@ -9,6 +9,7 @@ import { useEffect, type ReactNode } from 'react';
 import { toast } from 'sonner';
 import { Button } from '../ui/button';
 import { Toaster } from '../ui/sonner';
+import { UserDropdown } from '../user-dropdown';
 
 export const BaseLayout = ({ head, children }: { head?: { title?: string; children?: ReactNode }; children: ReactNode }) => {
   if (head?.title) {
@@ -29,10 +30,12 @@ export const BaseLayout = ({ head, children }: { head?: { title?: string; childr
           <BriefcaseBusiness className="size-5 xs:size-auto" />
           Job <span className="text-black">Listing</span>
         </Link>
-        {!auth && (
+        {!auth ? (
           <Button asChild>
             <Link href={login.get()}>Login</Link>
           </Button>
+        ) : (
+          <UserDropdown auth={auth} />
         )}
       </header>
       <main className="h-full px-8 pt-20 pb-10">
