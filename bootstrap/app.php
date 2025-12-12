@@ -17,6 +17,8 @@ return Application::configure(basePath: dirname(__DIR__))
             HandleInertiaRequests::class,
             // AddLinkHeadersForPreloadedAssets::class,
         ]);
+        $middleware->redirectGuestsTo(fn () => route('login.get'));
+        $middleware->redirectUsersTo(fn () => route('home'));
     })
     ->withExceptions(function (Exceptions $exceptions): void {
         //
