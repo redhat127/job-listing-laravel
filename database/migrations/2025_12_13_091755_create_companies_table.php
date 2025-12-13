@@ -16,7 +16,7 @@ return new class extends Migration
             $table->string('name');
             $table->text('location');
             $table->text('about');
-            $table->text('logo')->nullable();
+            $table->text('logo_url')->nullable();
             $table->string('website')->nullable();
             $table->string('xAccount')->nullable();
             $table->foreignUlid('user_id')
