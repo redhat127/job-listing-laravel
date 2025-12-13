@@ -6,7 +6,6 @@ use App\Models\User;
 use Exception;
 use GuzzleHttp\Exception\ClientException;
 use Illuminate\Support\Facades\Auth;
-use Illuminate\Support\Facades\Session;
 use Illuminate\Validation\ValidationException;
 use Laravel\Socialite\Facades\Socialite;
 use Laravel\Socialite\Two\InvalidStateException;
@@ -108,8 +107,6 @@ class LoginController extends Controller
     private function finishLogin()
     {
         request()->session()->regenerate();
-
-        Session::put('after-login', true);
 
         return redirect()->route('onboarding.get')
             ->with('flashMessage', [

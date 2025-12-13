@@ -20,6 +20,7 @@ return new class extends Migration
             $table->string('website')->nullable();
             $table->string('xAccount')->nullable();
             $table->foreignUlid('user_id')
+                ->unique()
                 ->constrained()
                 ->cascadeOnDelete();
             $table->timestamps();

@@ -32,7 +32,7 @@ class CompanyController extends Controller
 
         $company = collect($validated)->except('logo')->all();
 
-        Auth::user()->companies()->create($company);
+        Auth::user()->company()->create($company);
 
         return redirect()->route('home')
             ->with('flashMessage', [

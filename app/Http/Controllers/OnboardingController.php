@@ -2,19 +2,17 @@
 
 namespace App\Http\Controllers;
 
-use Illuminate\Support\Facades\Session;
+use Illuminate\Support\Facades\Auth;
 
 class OnboardingController extends Controller
 {
     public function get()
     {
-        $afterLogin = Session::get('after-login', false);
+        $userHasCompany = Auth::user()->company()->exists();
 
-        if (! $afterLogin) {
+        if ($userHasCompany) {
             return redirect()->route('home');
         }
-
-        Session::forget('after-login');
 
         return inertia('onboarding');
     }

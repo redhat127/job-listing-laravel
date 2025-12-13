@@ -4,7 +4,7 @@ import { Button } from '@/components/ui/button';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
 import { cn } from '@/lib/utils';
 import { ArrowRight, Briefcase, Building2 } from 'lucide-react';
-import { createContext, useContext, useEffect, useState, type Dispatch, type ReactNode, type SetStateAction } from 'react';
+import { createContext, useContext, useState, type Dispatch, type ReactNode, type SetStateAction } from 'react';
 
 type Role = 'company' | 'jobSeeker' | null;
 type Step = 'role-selection' | 'show-company-form' | 'show-job-seeking-form';
@@ -34,15 +34,6 @@ const OnboardingProvider = ({ children }: { children: ReactNode }) => {
 };
 
 export default function Onboarding() {
-  useEffect(() => {
-    const handleBeforeUnload = (e: BeforeUnloadEvent) => {
-      e.preventDefault();
-      e.returnValue = '';
-    };
-    window.addEventListener('beforeunload', handleBeforeUnload);
-    return () => window.removeEventListener('beforeunload', handleBeforeUnload);
-  }, []);
-
   return (
     <OnboardingProvider>
       <div className="mx-auto mt-8 max-w-md">
