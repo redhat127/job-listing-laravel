@@ -5,11 +5,14 @@ use App\Http\Controllers\LoginController;
 use App\Http\Controllers\LogoutController;
 use App\Http\Controllers\OnboardingController;
 use App\Http\Controllers\RegisterController;
+use App\Http\Middleware\OnboardingMiddleware;
 use Illuminate\Support\Facades\Route;
 
-Route::get('/', function () {
-    return inertia('home');
-})->name('home');
+Route::middleware([OnboardingMiddleware::class])->group(function () {
+    Route::get('/', function () {
+        return inertia('home');
+    })->name('home');
+});
 
 Route::middleware('guest')
     ->group(function () {
@@ -41,17 +44,20 @@ Route::middleware('auth')
                 Route::post('/', 'post')->name('post');
             });
 
-        Route::prefix('onboarding')
-            ->name('onboarding.')
-            ->controller(OnboardingController::class)
-            ->group(function () {
-                Route::get('/', 'get')->name('get');
-            });
+        Route::middleware([OnboardingMiddleware::class])->group(function () {
+            Route::prefix('onboarding')
+                ->name('onboarding.')
+                ->controller(OnboardingController::class)
+                ->group(function () {
+                    Route::get('/', 'get')->name('get');
+                });
 
-        Route::prefix('company')
-            ->name('company.')
-            ->controller(CompanyController::class)
-            ->group(function () {
-                Route::post('/', 'store')->name('store');
-            });
+            Route::prefix('company')
+                ->name('company.')
+                ->controller(CompanyController::class)
+                ->group(function () {
+                    Route::post('/', 'store')->name('store')
+                        ->withoutMiddleware(OnboardingMiddleware::class);
+                });
+        });
     });
