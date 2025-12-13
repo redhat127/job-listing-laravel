@@ -36,6 +36,7 @@ class CompanyController extends Controller
 
         Auth::user()->update([
             'onboarding_completed' => true,
+            'user_type' => 'company',
         ]);
 
         return redirect()->route('home')

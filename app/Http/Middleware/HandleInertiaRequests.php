@@ -47,6 +47,7 @@ class HandleInertiaRequests extends Middleware
                 'created_at',
                 'updated_at',
                 'avatar',
+                'user_type',
             ]),
             'flashMessage' => $request->session()->get('flashMessage'),
         ];
