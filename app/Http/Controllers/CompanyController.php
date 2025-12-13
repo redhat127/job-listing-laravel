@@ -34,6 +34,10 @@ class CompanyController extends Controller
 
         Auth::user()->company()->create($company);
 
+        Auth::user()->update([
+            'onboarding_completed' => true,
+        ]);
+
         return redirect()->route('home')
             ->with('flashMessage', [
                 'type' => 'success',

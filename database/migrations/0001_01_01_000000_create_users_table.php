@@ -22,6 +22,7 @@ return new class extends Migration
             $table->timestamps();
             $table->string('avatar')->nullable();
             $table->string('provider')->nullable();
+            $table->boolean('onboarding_completed')->default(false);
         });
 
         Schema::create('sessions', function (Blueprint $table) {

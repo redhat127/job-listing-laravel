@@ -8,9 +8,9 @@ class OnboardingController extends Controller
 {
     public function get()
     {
-        $userHasCompany = Auth::user()->company()->exists();
+        $onBoardingCompleted = Auth::user()->onboarding_completed;
 
-        if ($userHasCompany) {
+        if ($onBoardingCompleted) {
             return redirect()->route('home');
         }
 
