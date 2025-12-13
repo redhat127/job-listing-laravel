@@ -18,7 +18,16 @@ export const CheckboxInput = <
       render={({ field: { name, onBlur, onChange, ref, value, disabled }, fieldState }) => {
         return (
           <Field orientation="horizontal" data-invalid={fieldState.invalid} className="gap-2">
-            <Checkbox name={name} onBlur={onBlur} onCheckedChange={onChange} ref={ref} checked={value} disabled={disabled} id={name} />
+            <Checkbox
+              name={name}
+              onBlur={onBlur}
+              onCheckedChange={onChange}
+              ref={ref}
+              checked={value}
+              disabled={disabled}
+              id={name}
+              aria-invalid={fieldState.invalid}
+            />
             <FieldContent>
               <FieldLabel htmlFor={name}>{label}</FieldLabel>
               {fieldState.invalid && <FieldError errors={[fieldState.error]} />}
