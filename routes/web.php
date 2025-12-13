@@ -17,6 +17,8 @@ Route::middleware('guest')
             ->group(function () {
                 Route::get('/', 'get')->name('get');
                 Route::post('/', 'post')->name('post');
+                Route::get('/{provider}/redirect', 'redirect')->name('provider.redirect');
+                Route::get('/{provider}/callback', 'callback')->name('provider.callback');
             });
 
         Route::prefix('register')
