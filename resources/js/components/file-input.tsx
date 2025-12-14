@@ -4,7 +4,7 @@ import { Controller, type ControllerProps, type FieldPath, type FieldValues } fr
 import { Field, FieldError, FieldLabel } from './ui/field';
 import { Input } from './ui/input';
 
-export const ImageInput = <
+export const FileInput = <
   TFieldValues extends FieldValues = FieldValues,
   TName extends FieldPath<TFieldValues> = FieldPath<TFieldValues>,
   TTransformedValues = TFieldValues,
@@ -14,15 +14,18 @@ export const ImageInput = <
   label,
   imagePreviewClass,
   imageAlt,
+  isImage = true,
 }: Pick<ControllerProps<TFieldValues, TName, TTransformedValues>, 'name' | 'control'> & {
   label: string;
   imagePreviewClass?: string;
-  imageAlt: string;
+  imageAlt?: string;
+  isImage?: boolean;
 }) => {
   const [imagePreview, setImagePreview] = useState<string>();
+  if (isImage && !imageAlt) throw new Error('imageAlt attribute is required.');
   return (
     <div className="space-y-2">
-      {imagePreview && (
+      {isImage && imagePreview && (
         <div
           className={cn('overflow-hidden rounded-full', imagePreviewClass, {
             'h-16 w-16': !imagePreviewClass,
@@ -45,15 +48,17 @@ export const ImageInput = <
                 onChange={(e) => {
                   const file = e.target.files?.[0];
                   onChange(file);
-                  if (!file?.type.startsWith('image/')) {
-                    setImagePreview(undefined);
-                    return;
+                  if (isImage) {
+                    if (!file?.type.startsWith('image/')) {
+                      setImagePreview(undefined);
+                      return;
+                    }
+                    const fileReader = new FileReader();
+                    fileReader.onload = (e) => {
+                      setImagePreview(e.target?.result?.toString());
+                    };
+                    fileReader.readAsDataURL(file);
                   }
-                  const fileReader = new FileReader();
-                  fileReader.onload = (e) => {
-                    setImagePreview(e.target?.result?.toString());
-                  };
-                  fileReader.readAsDataURL(file);
                 }}
                 ref={ref}
                 disabled={disabled}

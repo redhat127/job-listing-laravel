@@ -1,4 +1,5 @@
-import { CreateCompanyForm } from '@/components/form/create-company-form';
+import { CreateCompanyForm } from '@/components/form/company/create-company-form';
+import { JobSeekerForm } from '@/components/form/job-seeker-form';
 import { BaseLayout } from '@/components/layout/base';
 import { Button } from '@/components/ui/button';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
@@ -7,7 +8,7 @@ import { ArrowRight, Briefcase, Building2 } from 'lucide-react';
 import { createContext, useContext, useState, type Dispatch, type ReactNode, type SetStateAction } from 'react';
 
 type Role = 'company' | 'jobSeeker' | null;
-type Step = 'role-selection' | 'show-company-form' | 'show-job-seeking-form';
+type Step = 'role-selection' | 'show-company-form' | 'show-job-seeker-form';
 
 type OnboardingContextType = {
   step: Step;
@@ -48,6 +49,7 @@ export default function Onboarding() {
             <div className="space-y-4">
               <RoleSelection />
               <CreateCompany />
+              <JobSeeker />
             </div>
             <BackButton />
           </CardContent>
@@ -65,13 +67,21 @@ const CreateCompany = () => {
   return <CreateCompanyForm />;
 };
 
+const JobSeeker = () => {
+  const { step } = useOnboarding();
+
+  if (step !== 'show-job-seeker-form') return null;
+
+  return <JobSeekerForm />;
+};
+
 const OnboardingDescription = () => {
   const { step } = useOnboarding();
 
   const descriptions: Record<Step, string> = {
     'role-selection': "Tell us what you're looking to do",
     'show-company-form': "Let's set up your company",
-    'show-job-seeking-form': 'Tell us about your job preferences',
+    'show-job-seeker-form': 'Tell us about your job preferences',
   };
 
   return <CardDescription>{descriptions[step]}</CardDescription>;
@@ -96,7 +106,7 @@ const RoleSelection = () => {
   if (step !== 'role-selection') return null;
 
   const handleContinue = () => {
-    setStep(selectedRole === 'company' ? 'show-company-form' : 'show-job-seeking-form');
+    setStep(selectedRole === 'company' ? 'show-company-form' : 'show-job-seeker-form');
   };
 
   return (

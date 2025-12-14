@@ -1,6 +1,7 @@
 <?php
 
 use App\Http\Controllers\CompanyController;
+use App\Http\Controllers\JobSeekerController;
 use App\Http\Controllers\LoginController;
 use App\Http\Controllers\LogoutController;
 use App\Http\Controllers\OnboardingController;
@@ -57,6 +58,14 @@ Route::middleware('auth')
                 ->controller(CompanyController::class)
                 ->group(function () {
                     Route::post('/', 'store')->name('store')
+                        ->withoutMiddleware(OnboardingMiddleware::class);
+                });
+
+            Route::prefix('job-seeker')
+                ->name('jobSeeker.')
+                ->controller(JobSeekerController::class)
+                ->group(function () {
+                    Route::post('/', 'post')->name('post')
                         ->withoutMiddleware(OnboardingMiddleware::class);
                 });
         });

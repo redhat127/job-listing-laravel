@@ -1,27 +1,22 @@
-import CompanyController from '@/actions/App/Http/Controllers/CompanyController';
+import JobSeekerController from '@/actions/App/Http/Controllers/JobSeekerController';
 import { FieldGroup } from '@/components/ui/field';
 import { setServerValidationErrors } from '@/lib/utils';
-import { createCompanySchema } from '@/zod-schema/company/create-company-schema';
+import { jobSeekerSchema } from '@/zod-schema/job-seeker-schema';
 import { zodResolver } from '@hookform/resolvers/zod';
 import { router } from '@inertiajs/react';
 import { useState } from 'react';
 import { useForm } from 'react-hook-form';
 import z from 'zod';
-import { ImageInput } from '../image-input';
+import { FileInput } from '../file-input';
 import { SubmitBtn } from '../submit-btn';
-import { TextInput } from '../text-input';
 import { Textbox } from '../textbox';
 
-export const CreateCompanyForm = () => {
-  const form = useForm<z.infer<typeof createCompanySchema>>({
-    resolver: zodResolver(createCompanySchema),
+export const JobSeekerForm = () => {
+  const form = useForm<z.infer<typeof jobSeekerSchema>>({
+    resolver: zodResolver(jobSeekerSchema),
     defaultValues: {
-      name: '',
-      location: '',
       about: '',
-      logo: undefined,
-      website: '',
-      xAccount: '',
+      resume: undefined,
     },
   });
   const {
@@ -36,7 +31,7 @@ export const CreateCompanyForm = () => {
     <form
       className="max-w-lg"
       onSubmit={handleSubmit((data) => {
-        router.post(CompanyController.store(), data, {
+        router.post(JobSeekerController.post(), data, {
           onBefore() {
             setIsPending(true);
           },
@@ -50,12 +45,8 @@ export const CreateCompanyForm = () => {
       })}
     >
       <FieldGroup className="gap-4">
-        <TextInput control={control} name="name" label="Name" />
-        <Textbox control={control} name="location" label="Location" />
         <Textbox control={control} name="about" label="About" className="min-h-32" />
-        <ImageInput control={control} name="logo" label="Logo" imageAlt="logo preview" imagePreviewClass="h-20 w-20" />
-        <TextInput control={control} name="website" label="Website" inputType="url" />
-        <TextInput control={control} name="xAccount" label="X Account" inputType="url" />
+        <FileInput control={control} name="resume" label="Resume" isImage={false} />
         <SubmitBtn isDisabled={isFormDisabled}>Create</SubmitBtn>
       </FieldGroup>
     </form>
