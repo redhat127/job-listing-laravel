@@ -34,7 +34,6 @@ export const CreateCompanyForm = () => {
   const isFormDisabled = isSubmitting || isPending;
   return (
     <form
-      className="max-w-lg"
       onSubmit={handleSubmit((data) => {
         router.post(CompanyController.store(), data, {
           onBefore() {

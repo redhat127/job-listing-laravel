@@ -37,7 +37,7 @@ const OnboardingProvider = ({ children }: { children: ReactNode }) => {
 export default function Onboarding() {
   return (
     <OnboardingProvider>
-      <div className="mx-auto mt-8 max-w-md">
+      <div className="mx-auto mt-8 max-w-3xl">
         <Card>
           <CardHeader>
             <CardTitle>

@@ -29,7 +29,6 @@ export const JobSeekerForm = () => {
   const isFormDisabled = isSubmitting || isPending;
   return (
     <form
-      className="max-w-lg"
       onSubmit={handleSubmit((data) => {
         router.post(JobSeekerController.post(), data, {
           onBefore() {
