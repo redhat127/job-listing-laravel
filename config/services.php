@@ -47,4 +47,9 @@ return [
         'redirect' => fn () => route('login.provider.callback', ['provider' => 'google']),
     ],
 
+    'turnstile' => [
+        'key' => env('TURNSTILE_SITE_KEY'),
+        'secret' => env('TURNSTILE_SECRET_KEY'),
+        'skip_local' => env('TURNSTILE_SKIP_LOCAL'),
+    ],
 ];

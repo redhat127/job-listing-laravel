@@ -7,6 +7,7 @@ use App\Http\Controllers\LogoutController;
 use App\Http\Controllers\OnboardingController;
 use App\Http\Controllers\RegisterController;
 use App\Http\Middleware\OnboardingMiddleware;
+use App\Http\Middleware\TurnstileMiddleware;
 use Illuminate\Support\Facades\Route;
 
 Route::middleware([OnboardingMiddleware::class])->group(function () {
@@ -22,7 +23,7 @@ Route::middleware('guest')
             ->controller(LoginController::class)
             ->group(function () {
                 Route::get('/', 'get')->name('get');
-                Route::post('/', 'post')->name('post');
+                Route::post('/', 'post')->name('post')->middleware(TurnstileMiddleware::class);
                 Route::get('/{provider}/redirect', 'redirect')->name('provider.redirect');
                 Route::get('/{provider}/callback', 'callback')->name('provider.callback');
             });
@@ -32,7 +33,7 @@ Route::middleware('guest')
             ->controller(RegisterController::class)
             ->group(function () {
                 Route::get('/', 'get')->name('get');
-                Route::post('/', 'post')->name('post');
+                Route::post('/', 'post')->name('post')->middleware(TurnstileMiddleware::class);
             });
     });
 
@@ -58,7 +59,8 @@ Route::middleware('auth')
                 ->controller(CompanyController::class)
                 ->group(function () {
                     Route::post('/', 'store')->name('store')
-                        ->withoutMiddleware(OnboardingMiddleware::class);
+                        ->withoutMiddleware(OnboardingMiddleware::class)
+                        ->middleware(TurnstileMiddleware::class);
                 });
 
             Route::prefix('job-seeker')
@@ -66,7 +68,8 @@ Route::middleware('auth')
                 ->controller(JobSeekerController::class)
                 ->group(function () {
                     Route::post('/', 'post')->name('post')
-                        ->withoutMiddleware(OnboardingMiddleware::class);
+                        ->withoutMiddleware(OnboardingMiddleware::class)
+                        ->middleware(TurnstileMiddleware::class);
                 });
         });
     });

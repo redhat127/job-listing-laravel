@@ -10,8 +10,10 @@ import z from 'zod';
 import { FileInput } from '../file-input';
 import { SubmitBtn } from '../submit-btn';
 import { Textbox } from '../textbox';
+import { useTurnstile } from '../turnstil-provider';
 
 export const JobSeekerForm = () => {
+  const turnstile = useTurnstile();
   const form = useForm<z.infer<typeof jobSeekerSchema>>({
     resolver: zodResolver(jobSeekerSchema),
     defaultValues: {
@@ -26,21 +28,32 @@ export const JobSeekerForm = () => {
     setError,
   } = form;
   const [isPending, setIsPending] = useState(false);
-  const isFormDisabled = isSubmitting || isPending;
+  const isFormDisabled = isSubmitting || isPending || !turnstile.isValid;
   return (
     <form
       onSubmit={handleSubmit((data) => {
-        router.post(JobSeekerController.post(), data, {
-          onBefore() {
-            setIsPending(true);
+        if (!turnstile.skip_local && !turnstile.token) {
+          return;
+        }
+        router.post(
+          JobSeekerController.post(),
+          {
+            ...data,
+            'turnstile-token': turnstile.token,
           },
-          onFinish() {
-            setIsPending(false);
+          {
+            onBefore() {
+              setIsPending(true);
+            },
+            onFinish() {
+              setIsPending(false);
+              turnstile.reset();
+            },
+            onError(errors) {
+              setServerValidationErrors(errors, setError);
+            },
           },
-          onError(errors) {
-            setServerValidationErrors(errors, setError);
-          },
-        });
+        );
       })}
     >
       <FieldGroup className="gap-4">

@@ -1,5 +1,6 @@
 import CompanyController from '@/actions/App/Http/Controllers/CompanyController';
 import { FileInput } from '@/components/file-input';
+import { useTurnstile } from '@/components/turnstil-provider';
 import { FieldGroup } from '@/components/ui/field';
 import { setServerValidationErrors } from '@/lib/utils';
 import { createCompanySchema } from '@/zod-schema/company/create-company-schema';
@@ -13,6 +14,7 @@ import { TextInput } from '../../text-input';
 import { Textbox } from '../../textbox';
 
 export const CreateCompanyForm = () => {
+  const turnstile = useTurnstile();
   const form = useForm<z.infer<typeof createCompanySchema>>({
     resolver: zodResolver(createCompanySchema),
     defaultValues: {
@@ -31,21 +33,32 @@ export const CreateCompanyForm = () => {
     setError,
   } = form;
   const [isPending, setIsPending] = useState(false);
-  const isFormDisabled = isSubmitting || isPending;
+  const isFormDisabled = isSubmitting || isPending || !turnstile.isValid;
   return (
     <form
       onSubmit={handleSubmit((data) => {
-        router.post(CompanyController.store(), data, {
-          onBefore() {
-            setIsPending(true);
+        if (!turnstile.skip_local && !turnstile.token) {
+          return;
+        }
+        router.post(
+          CompanyController.store(),
+          {
+            ...data,
+            'turnstile-token': turnstile.token,
           },
-          onFinish() {
-            setIsPending(false);
+          {
+            onBefore() {
+              setIsPending(true);
+            },
+            onFinish() {
+              setIsPending(false);
+              turnstile.reset();
+            },
+            onError(errors) {
+              setServerValidationErrors(errors, setError);
+            },
           },
-          onError(errors) {
-            setServerValidationErrors(errors, setError);
-          },
-        });
+        );
       })}
     >
       <FieldGroup className="gap-4">

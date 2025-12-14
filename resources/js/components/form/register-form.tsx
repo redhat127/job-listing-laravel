@@ -10,8 +10,10 @@ import z from 'zod';
 import { PasswordInput } from '../password-input';
 import { SubmitBtn } from '../submit-btn';
 import { TextInput } from '../text-input';
+import { useTurnstile } from '../turnstil-provider';
 
 export const RegisterForm = () => {
+  const turnstile = useTurnstile();
   const form = useForm<z.infer<typeof registerSchema>>({
     resolver: zodResolver(registerSchema),
     defaultValues: {
@@ -27,22 +29,33 @@ export const RegisterForm = () => {
     setError,
   } = form;
   const [isPending, setIsPending] = useState(false);
-  const isFormDisabled = isSubmitting || isPending;
+  const isFormDisabled = isSubmitting || isPending || !turnstile.isValid;
   return (
     <form
       className="max-w-lg"
       onSubmit={handleSubmit((data) => {
-        router.post(RegisterController.post(), data, {
-          onBefore() {
-            setIsPending(true);
+        if (!turnstile.skip_local && !turnstile.token) {
+          return;
+        }
+        router.post(
+          RegisterController.post(),
+          {
+            ...data,
+            'turnstile-token': turnstile.token,
           },
-          onFinish() {
-            setIsPending(false);
+          {
+            onBefore() {
+              setIsPending(true);
+            },
+            onFinish() {
+              setIsPending(false);
+              turnstile.reset();
+            },
+            onError(errors) {
+              setServerValidationErrors(errors, setError);
+            },
           },
-          onError(errors) {
-            setServerValidationErrors(errors, setError);
-          },
-        });
+        );
       })}
     >
       <FieldGroup className="gap-4">

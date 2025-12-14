@@ -1,6 +1,7 @@
 import { CreateCompanyForm } from '@/components/form/company/create-company-form';
 import { JobSeekerForm } from '@/components/form/job-seeker-form';
 import { BaseLayout } from '@/components/layout/base';
+import { TurnstileProvider } from '@/components/turnstil-provider';
 import { Button } from '@/components/ui/button';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
 import { cn } from '@/lib/utils';
@@ -48,8 +49,10 @@ export default function Onboarding() {
           <CardContent>
             <div className="space-y-4">
               <RoleSelection />
-              <CreateCompany />
-              <JobSeeker />
+              <TurnstileProvider>
+                <CreateCompany />
+                <JobSeeker />
+              </TurnstileProvider>
             </div>
             <BackButton />
           </CardContent>

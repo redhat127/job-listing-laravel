@@ -18,5 +18,23 @@ export type SharedFlashMessage = {
   flashMessage?: {
     type: 'error' | 'success';
     text: string;
-  };
+  } & Record<string, unknown>;
 };
+
+declare global {
+  interface Window {
+    turnstile?: {
+      render(
+        id: string,
+        args: {
+          sitekey: string;
+          theme?: 'auth' | 'dark' | 'light';
+          size?: 'normal' | 'flexible' | 'compact';
+          callback(token: string): void;
+          'error-callback': () => void;
+        },
+      ): string;
+      reset: (widgetId: string) => void;
+    };
+  }
+}
