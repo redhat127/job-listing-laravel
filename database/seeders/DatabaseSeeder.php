@@ -2,8 +2,6 @@
 
 namespace Database\Seeders;
 
-use App\Models\Company;
-use App\Models\Job;
 use App\Models\User;
 // use Illuminate\Database\Console\Seeds\WithoutModelEvents;
 use Illuminate\Database\Seeder;
@@ -29,10 +27,6 @@ class DatabaseSeeder extends Seeder
             'user_type' => 'company',
         ]);
 
-        $company = Company::factory()->for($user, 'creator')->create();
-
-        Job::factory()->create([
-            'company_id' => $company->id,
-        ]);
+        (new JobsTableSeeder($user))->run();
     }
 }
