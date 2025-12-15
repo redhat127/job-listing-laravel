@@ -70,6 +70,9 @@ Route::middleware('auth')
                     Route::post('/job/{jobId}/edit', 'jobUpdate')->name('job.update')
                         ->middleware(TurnstileMiddleware::class);
 
+                    Route::delete('/job/{jobId}/delete', 'jobDelete')->name('job.delete')
+                        ->middleware(TurnstileMiddleware::class);
+
                     Route::get('/me', 'myCompany')->name('myCompany');
                 });
 

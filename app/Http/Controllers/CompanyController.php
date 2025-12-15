@@ -215,4 +215,27 @@ class CompanyController extends Controller
                 'text' => 'Your job has been updated.',
             ]);
     }
+
+    public function jobDelete(string $jobId)
+    {
+        $user = $this->isUserTypeCompany();
+
+        $job = $this->getJob($jobId, $user);
+
+        $result = $job->delete();
+
+        if (! $result) {
+            return back()
+                ->with('flashMessage', [
+                    'type' => 'error',
+                    'text' => 'Failed to delete the job.',
+                ]);
+        }
+
+        return redirect()->route('company.myCompany')
+            ->with('flashMessage', [
+                'type' => 'success',
+                'text' => 'Your job has been deleted.',
+            ]);
+    }
 }
