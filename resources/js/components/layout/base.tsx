@@ -7,6 +7,7 @@ import { Head, Link } from '@inertiajs/react';
 import { BriefcaseBusiness } from 'lucide-react';
 import { useEffect, type ReactNode } from 'react';
 import { toast } from 'sonner';
+import { Sidebar } from '../sidebar';
 import { Button } from '../ui/button';
 import { Toaster } from '../ui/sonner';
 import { UserDropdown } from '../user-dropdown';
@@ -38,7 +39,8 @@ export const BaseLayout = ({ head, children }: { head?: { title?: string; childr
           <UserDropdown auth={auth} />
         )}
       </header>
-      <main className="min-h-full px-8 pt-20 pb-10">
+      <Sidebar />
+      <main className="ml-16 min-h-full px-8 pt-20 pb-10">
         {children}
         <Toaster expand position="top-center" closeButton />
       </main>
