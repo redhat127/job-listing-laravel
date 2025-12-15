@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use App\Models\User;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Storage;
 use Illuminate\Validation\Rule;
@@ -110,10 +111,8 @@ class CompanyController extends Controller
         return inertia('company/post-job');
     }
 
-    public function jobStore()
+    private function postJobValidation()
     {
-        $user = $this->isUserTypeCompany();
-
         $validated = request()->validate([
             'title' => ['bail', 'required', 'string', 'min:3', 'max:100'],
             'requirements' => ['bail', 'nullable', 'string', 'min:10', 'max:5000'],
@@ -121,7 +120,7 @@ class CompanyController extends Controller
             'location' => ['bail', 'required', 'string', 'min:2', 'max:500'],
             'city' => ['bail', 'nullable', 'string', 'min:3', 'max:50'],
             'state' => ['bail', 'nullable', 'string', 'min:3', 'max:50'],
-            'country' => ['bail', 'nullable', 'string', 'min:3', 'max:50'],
+            'country' => ['bail', 'nullable', 'string', 'min:2', 'max:50'],
             'is_remote' => ['bail', 'required', 'boolean'],
             'job_type' => ['bail', 'required', 'string', Rule::in(getJobTypes())],
             'experience_level' => ['bail', 'required', 'string', Rule::in(getJobExperienceLevels())],
@@ -132,12 +131,88 @@ class CompanyController extends Controller
             'status' => ['bail', 'required', 'string', Rule::in(getJobStatus())],
         ]);
 
-        $user->company->jobs()->create($validated);
+        return $validated;
+    }
+
+    public function jobStore()
+    {
+        $user = $this->isUserTypeCompany();
+
+        $validated = $this->postJobValidation();
+
+        $newJob = $user->company->jobs()->create($validated);
+
+        if (! $newJob) {
+            return back()
+                ->with('flashMessage', [
+                    'type' => 'error',
+                    'text' => 'Failed to create the job.',
+                ]);
+        }
 
         return redirect()->route('company.myCompany')
             ->with('flashMessage', [
                 'type' => 'success',
                 'text' => 'Your job has been created.',
+            ]);
+    }
+
+    private function getJob(string $jobId, ?User $user = null)
+    {
+        $user = $user ?? Auth::user();
+
+        return $user->company->jobs()->select([
+            'id',
+            'title',
+            'slug',
+            'requirements',
+            'responsibilities',
+            'location',
+            'city',
+            'state',
+            'country',
+            'is_remote',
+            'job_type',
+            'experience_level',
+            'salary',
+            'show_salary',
+            'skills',
+            'benefits',
+            'status',
+        ])->where('id', $jobId)->firstOrFail();
+    }
+
+    public function jobEdit(string $jobId)
+    {
+        $user = $this->isUserTypeCompany();
+
+        $job = $this->getJob($jobId, $user);
+
+        return inertia('company/edit/edit-job', compact('job'));
+    }
+
+    public function jobUpdate(string $jobId)
+    {
+        $user = $this->isUserTypeCompany();
+
+        $job = $this->getJob($jobId, $user);
+
+        $validated = $this->postJobValidation();
+
+        $result = $job->update($validated);
+
+        if (! $result) {
+            return back()
+                ->with('flashMessage', [
+                    'type' => 'error',
+                    'text' => 'Failed to update the job.',
+                ]);
+        }
+
+        return redirect()->route('company.myCompany')
+            ->with('flashMessage', [
+                'type' => 'success',
+                'text' => 'Your job has been updated.',
             ]);
     }
 }

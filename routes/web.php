@@ -61,9 +61,15 @@ Route::middleware('auth')
                     Route::post('/', 'store')->name('store')
                         ->withoutMiddleware(OnboardingMiddleware::class)
                         ->middleware(TurnstileMiddleware::class);
+
                     Route::get('/job/create', 'jobCreate')->name('job.create');
                     Route::post('/job/create', 'jobStore')->name('job.store')
                         ->middleware(TurnstileMiddleware::class);
+
+                    Route::get('/job/{jobId}/edit', 'jobEdit')->name('job.edit');
+                    Route::post('/job/{jobId}/edit', 'jobUpdate')->name('job.update')
+                        ->middleware(TurnstileMiddleware::class);
+
                     Route::get('/me', 'myCompany')->name('myCompany');
                 });
 

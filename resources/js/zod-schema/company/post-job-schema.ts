@@ -53,7 +53,7 @@ export const postJobSchema = z.object({
   location: z.string().trim().min(2, 'location must be at least 2 characters.').max(500, 'location is too long.'),
   city: optionalString(3, 50, 'city'),
   state: optionalString(3, 50, 'state'),
-  country: optionalString(3, 50, 'country'),
+  country: optionalString(2, 50, 'country'),
   is_remote: z.boolean(),
   job_type: z.literal(
     jobTypes.map((j) => j.value),

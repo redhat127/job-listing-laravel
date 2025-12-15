@@ -8,6 +8,7 @@ import { useTurnstile } from '@/components/turnstil-provider';
 import { Button } from '@/components/ui/button';
 import { FieldGroup } from '@/components/ui/field';
 import { setServerValidationErrors } from '@/lib/utils';
+import type { EditJob } from '@/pages/company/edit/edit-job';
 import company from '@/routes/company';
 import { experienceLevels, jobStatus, jobTypes, postJobSchema } from '@/zod-schema/company/post-job-schema';
 import { zodResolver } from '@hookform/resolvers/zod';
@@ -16,26 +17,26 @@ import { useState } from 'react';
 import { useForm } from 'react-hook-form';
 import type z from 'zod';
 
-export const PostJobForm = () => {
+export const PostJobForm = ({ job }: { job?: EditJob }) => {
   const turnstile = useTurnstile();
   const form = useForm<z.infer<typeof postJobSchema>>({
     resolver: zodResolver(postJobSchema),
     defaultValues: {
-      title: '',
-      requirements: '',
-      responsibilities: '',
-      location: '',
-      city: '',
-      state: '',
-      country: '',
-      is_remote: false,
-      job_type: 'full-time',
-      experience_level: 'entry',
-      salary: '',
-      show_salary: false,
-      skills: '',
-      benefits: '',
-      status: 'draft',
+      title: job?.title ?? '',
+      requirements: job?.requirements ?? '',
+      responsibilities: job?.responsibilities ?? '',
+      location: job?.location ?? '',
+      city: job?.city ?? '',
+      state: job?.state ?? '',
+      country: job?.country ?? '',
+      is_remote: job?.is_remote ?? false,
+      job_type: job?.job_type ?? 'full-time',
+      experience_level: job?.experience_level ?? 'entry',
+      salary: job?.salary ?? '',
+      show_salary: job?.show_salary ?? false,
+      skills: job?.skills ?? '',
+      benefits: job?.benefits ?? '',
+      status: job?.status ?? 'draft',
     },
   });
   const {
@@ -53,7 +54,7 @@ export const PostJobForm = () => {
           return;
         }
         router.post(
-          CompanyController.jobStore(),
+          job ? CompanyController.jobEdit({ jobId: job.id }) : CompanyController.jobStore(),
           {
             ...data,
             'turnstile-token': turnstile.token,
@@ -93,7 +94,7 @@ export const PostJobForm = () => {
         <RadioGroupInput control={control} name="status" label="Status" items={jobStatus} />
         <div className="flex items-center gap-2">
           <SubmitBtn isDisabled={isFormDisabled} className="self-start">
-            Create
+            {job ? 'Update' : 'Create'}
           </SubmitBtn>
           <Button asChild variant="outline">
             <Link href={company.myCompany()}>Cancel</Link>

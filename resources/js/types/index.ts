@@ -1,3 +1,5 @@
+import type { experienceLevels, jobStatus, jobTypes } from '@/zod-schema/company/post-job-schema';
+
 export interface User {
   id: number;
   name: string;
@@ -46,3 +48,24 @@ declare global {
     };
   }
 }
+
+export type Job = {
+  id: string;
+  title: string;
+  slug: string;
+  requirements?: string;
+  responsibilities?: string;
+  location: string;
+  city?: string;
+  state?: string;
+  country?: string;
+  is_remote: boolean;
+  job_type: (typeof jobTypes)[number]['value'];
+  experience_level: (typeof experienceLevels)[number]['value'];
+  salary?: string;
+  show_salary: boolean;
+  skills?: string;
+  benefits?: string;
+  status: (typeof jobStatus)[number]['value'];
+  company_id: string;
+};
