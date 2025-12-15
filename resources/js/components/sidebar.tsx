@@ -6,6 +6,7 @@ import { Link } from '@inertiajs/react';
 import { ArrowLeft, ArrowRight, Building2, Home, PencilLine } from 'lucide-react';
 import { useLayoutEffect, useState, type ReactNode } from 'react';
 import { Button } from './ui/button';
+import { Tooltip, TooltipContent, TooltipTrigger } from './ui/tooltip';
 
 export const Sidebar = () => {
   const [isCollapsed, setIsCollapsed] = useState(true);
@@ -36,19 +37,26 @@ export const Sidebar = () => {
         top: sidebarTop,
       }}
     >
-      <Button
-        variant="outline"
-        size="icon-sm"
-        onClick={() => {
-          setIsCollapsed((prev) => !prev);
-        }}
-        title="Open Sidebar"
-        className={cn({
-          'ml-auto': !isCollapsed,
-        })}
-      >
-        {isCollapsed ? <ArrowRight /> : <ArrowLeft />}
-      </Button>
+      <Tooltip>
+        <TooltipTrigger asChild>
+          <Button
+            variant="outline"
+            size="icon-sm"
+            onClick={() => {
+              setIsCollapsed((prev) => !prev);
+            }}
+            className={cn({
+              'ml-auto': !isCollapsed,
+            })}
+          >
+            {isCollapsed ? <ArrowRight /> : <ArrowLeft />}
+          </Button>
+        </TooltipTrigger>
+        <TooltipContent align="center" side="right">
+          {isCollapsed ? 'Open Sidebar' : 'Close Sidebar'}
+        </TooltipContent>
+      </Tooltip>
+
       <SidebarMenus isCollapsed={isCollapsed} />
     </div>
   );
@@ -78,9 +86,16 @@ const SidebarMenus = ({ isCollapsed }: { isCollapsed: boolean }) => {
 const SidebarCollapsedMenuItem = ({ title, icon, href }: { title: string; icon: ReactNode; href: string }) => {
   return (
     <li>
-      <Button asChild variant="outline" size="icon-sm" title={title}>
-        <Link href={href}>{icon}</Link>
-      </Button>
+      <Tooltip>
+        <TooltipTrigger>
+          <Button asChild variant="outline" size="icon-sm">
+            <Link href={href}>{icon}</Link>
+          </Button>
+        </TooltipTrigger>
+        <TooltipContent align="center" side="right">
+          {title}
+        </TooltipContent>
+      </Tooltip>
     </li>
   );
 };
