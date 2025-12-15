@@ -2,6 +2,7 @@
 
 namespace Database\Seeders;
 
+use App\Models\Company;
 use App\Models\User;
 // use Illuminate\Database\Console\Seeds\WithoutModelEvents;
 use Illuminate\Database\Seeder;
@@ -20,9 +21,13 @@ class DatabaseSeeder extends Seeder
             Storage::deleteDirectory($directory);
         }
 
-        User::factory()->create([
+        $user = User::factory()->create([
             'name' => 'dave',
             'email' => 'dave@example.com',
+            'onboarding_completed' => true,
+            'user_type' => 'company',
         ]);
+
+        Company::factory()->for($user, 'creator')->create();
     }
 }
