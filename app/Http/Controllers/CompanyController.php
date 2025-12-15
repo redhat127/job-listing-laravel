@@ -4,11 +4,32 @@ namespace App\Http\Controllers;
 
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Storage;
+use Illuminate\Validation\Rule;
 use Illuminate\Validation\Rules\File;
 use Intervention\Image\Laravel\Facades\Image;
 
 class CompanyController extends Controller
 {
+    private function isUserTypeCompany()
+    {
+        $user = Auth::user();
+
+        if ($user->user_type !== 'company') {
+            abort(404);
+        }
+
+        return $user;
+    }
+
+    public function myCompany()
+    {
+        $user = $this->isUserTypeCompany();
+
+        $company = $user->company;
+
+        return inertia('company/show', compact('company'));
+    }
+
     public function store()
     {
         $validated = request()->validate([
@@ -79,6 +100,44 @@ class CompanyController extends Controller
             ->with('flashMessage', [
                 'type' => 'success',
                 'text' => 'Your company has been created.',
+            ]);
+    }
+
+    public function jobCreate()
+    {
+        $this->isUserTypeCompany();
+
+        return inertia('company/post-job');
+    }
+
+    public function jobStore()
+    {
+        $user = $this->isUserTypeCompany();
+
+        $validated = request()->validate([
+            'title' => ['bail', 'required', 'string', 'min:3', 'max:100'],
+            'requirements' => ['bail', 'nullable', 'string', 'min:10', 'max:5000'],
+            'responsibilities' => ['bail', 'nullable', 'string', 'min:10', 'max:5000'],
+            'location' => ['bail', 'required', 'string', 'min:2', 'max:500'],
+            'city' => ['bail', 'nullable', 'string', 'min:3', 'max:50'],
+            'state' => ['bail', 'nullable', 'string', 'min:3', 'max:50'],
+            'country' => ['bail', 'nullable', 'string', 'min:3', 'max:50'],
+            'is_remote' => ['bail', 'required', 'boolean'],
+            'job_type' => ['bail', 'required', 'string', Rule::in(getJobTypes())],
+            'experience_level' => ['bail', 'required', 'string', Rule::in(getJobExperienceLevels())],
+            'salary' => ['bail', 'nullable', 'string', 'min:3', 'max:50'],
+            'show_salary' => ['bail', 'required', 'boolean'],
+            'skills' => ['bail', 'nullable', 'string', 'min:10', 'max:5000'],
+            'benefits' => ['bail', 'nullable', 'string', 'min:10', 'max:5000'],
+            'status' => ['bail', 'required', 'string', Rule::in(getJobStatus())],
+        ]);
+
+        $user->company->jobs()->create($validated);
+
+        return redirect()->route('company.myCompany')
+            ->with('flashMessage', [
+                'type' => 'success',
+                'text' => 'Your job has been created.',
             ]);
     }
 }

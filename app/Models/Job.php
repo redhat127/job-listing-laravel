@@ -7,26 +7,21 @@ use Illuminate\Database\Eloquent\Concerns\HasUlids;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 
-class Company extends Model
+class Job extends Model
 {
-    /** @use HasFactory<\Database\Factories\CompanyFactory> */
+    /** @use HasFactory<\Database\Factories\JobFactory> */
     use HasFactory, HasUlids, Sluggable;
 
-    public function creator()
+    public function company()
     {
-        return $this->belongsTo(User::class, 'user_id');
-    }
-
-    public function jobs()
-    {
-        return $this->hasMany(Job::class);
+        return $this->belongsTo(Company::class);
     }
 
     public function sluggable(): array
     {
         return [
             'slug' => [
-                'source' => 'name',
+                'source' => 'title',
             ],
         ];
     }

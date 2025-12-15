@@ -1,6 +1,7 @@
 import { useAuth } from '@/hooks/use-auth';
 import { cn } from '@/lib/utils';
 import { home } from '@/routes';
+import company from '@/routes/company';
 import { Link } from '@inertiajs/react';
 import { ArrowLeft, ArrowRight, Home, PencilLine } from 'lucide-react';
 import { useLayoutEffect, useState, type ReactNode } from 'react';
@@ -61,7 +62,7 @@ const SidebarMenus = ({ isCollapsed }: { isCollapsed: boolean }) => {
       {isCollapsed && (
         <ul className="flex flex-col gap-2">
           <SidebarCollapsedMenuItem title="Home" icon={<Home />} href={home.url()} />
-          {isUserTypeCompany && <SidebarCollapsedMenuItem title="Post a Job" icon={<PencilLine />} href={home.url()} />}
+          {isUserTypeCompany && <SidebarCollapsedMenuItem title="Post a Job" icon={<PencilLine />} href={company.job.create.url()} />}
         </ul>
       )}
     </div>

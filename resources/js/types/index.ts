@@ -25,6 +25,10 @@ export type SharedFlashMessage = {
   } & Record<string, unknown>;
 };
 
+export type Company = {
+  name: string;
+};
+
 declare global {
   interface Window {
     turnstile?: {

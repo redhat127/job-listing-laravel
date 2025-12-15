@@ -61,6 +61,10 @@ Route::middleware('auth')
                     Route::post('/', 'store')->name('store')
                         ->withoutMiddleware(OnboardingMiddleware::class)
                         ->middleware(TurnstileMiddleware::class);
+                    Route::get('/job/create', 'jobCreate')->name('job.create');
+                    Route::post('/job/create', 'jobStore')->name('job.store')
+                        ->middleware(TurnstileMiddleware::class);
+                    Route::get('/me', 'myCompany')->name('myCompany');
                 });
 
             Route::prefix('job-seeker')
