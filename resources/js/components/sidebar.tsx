@@ -56,7 +56,8 @@ export const Sidebar = () => {
 
 const SidebarMenus = ({ isCollapsed }: { isCollapsed: boolean }) => {
   const auth = useAuth();
-  const isUserTypeCompany = auth && auth.onboarding_completed && auth.user_type === 'company';
+  const isOnboardingCompleted = auth && auth.onboarding_completed;
+  const isUserTypeCompany = isOnboardingCompleted && auth.user_type === 'company';
   return (
     <div className="scrollbar-none max-h-screen flex-1 overflow-auto pb-16">
       {isCollapsed && (
