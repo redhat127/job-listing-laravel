@@ -1,5 +1,6 @@
 <?php
 
+use App\Http\Controllers\AccountController;
 use App\Http\Controllers\CompanyController;
 use App\Http\Controllers\JobSeekerController;
 use App\Http\Controllers\LoginController;
@@ -44,6 +45,14 @@ Route::middleware('auth')
             ->controller(LogoutController::class)
             ->group(function () {
                 Route::post('/', 'post')->name('post');
+            });
+
+        Route::prefix('account')
+            ->name('account.')
+            ->controller(AccountController::class)
+            ->group(function () {
+                Route::get('/', 'index')->name('index');
+                Route::post('/profile-details', 'profileDetails')->name('profileDetails');
             });
 
         Route::middleware([OnboardingMiddleware::class])->group(function () {

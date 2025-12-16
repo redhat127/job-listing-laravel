@@ -1,5 +1,8 @@
+import account from '@/routes/account';
 import type { User as IUser } from '@/types';
-import { useMemo, useState } from 'react';
+import { Link } from '@inertiajs/react';
+import { User } from 'lucide-react';
+import { useCallback, useMemo, useState, type ReactNode } from 'react';
 import { LogoutForm } from './form/logout-form';
 import {
   DropdownMenu,
@@ -16,9 +19,9 @@ export const UserDropdown = ({ auth: { name, email, avatar } }: { auth: Pick<IUs
     return <UserAvatar name={name} avatar={avatar} />;
   }, [name, avatar]);
   const [open, setOpen] = useState(false);
-  //   const closeDropdown = useCallback(() => {
-  //     setOpen(false);
-  //   }, []);
+  const closeDropdown = useCallback(() => {
+    setOpen(false);
+  }, []);
   return (
     <DropdownMenu open={open} onOpenChange={setOpen}>
       <DropdownMenuTrigger>{userInitials}</DropdownMenuTrigger>
@@ -31,9 +34,7 @@ export const UserDropdown = ({ auth: { name, email, avatar } }: { auth: Pick<IUs
           </div>
         </DropdownMenuLabel>
         <DropdownMenuSeparator />
-        {/* TODO: don't know how this goes yet! */}
-        {/* <UserDropdownMenuItem href={home.url()} label="Favorite Jobs" icon={<Heart />} closeDropdown={closeDropdown} />
-        <UserDropdownMenuItem href={home.url()} label="My Jobs" icon={<Layers />} closeDropdown={closeDropdown} /> */}
+        <UserDropdownMenuItem href={account.index.url()} icon={<User />} closeDropdown={closeDropdown} label="Account" />
         <DropdownMenuItem className="p-0">
           <LogoutForm />
         </DropdownMenuItem>
@@ -42,13 +43,13 @@ export const UserDropdown = ({ auth: { name, email, avatar } }: { auth: Pick<IUs
   );
 };
 
-// const UserDropdownMenuItem = ({ href, label, icon, closeDropdown }: { href: string; label: string; icon: ReactNode; closeDropdown(): void }) => {
-//   return (
-//     <DropdownMenuItem className="p-0">
-//       <Link href={href} className="flex w-full items-center gap-1.5 px-2 py-1.5" onClick={closeDropdown}>
-//         {icon}
-//         {label}
-//       </Link>
-//     </DropdownMenuItem>
-//   );
-// };
+const UserDropdownMenuItem = ({ href, label, icon, closeDropdown }: { href: string; label: string; icon: ReactNode; closeDropdown(): void }) => {
+  return (
+    <DropdownMenuItem className="p-0">
+      <Link href={href} className="flex w-full items-center gap-1.5 px-2 py-1.5" onClick={closeDropdown}>
+        {icon}
+        {label}
+      </Link>
+    </DropdownMenuItem>
+  );
+};
