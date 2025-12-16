@@ -1,6 +1,7 @@
 import AccountController from '@/actions/App/Http/Controllers/AccountController';
 import { SubmitBtn } from '@/components/submit-btn';
 import { TextInput } from '@/components/text-input';
+import { useTurnstile } from '@/components/turnstil-provider';
 import { FieldGroup } from '@/components/ui/field';
 import { useAuth } from '@/hooks/use-auth';
 import { setServerValidationErrors } from '@/lib/utils';
@@ -38,24 +39,36 @@ export const ProfileDetailsForm = () => {
     setError,
   } = form;
   const [isPending, setIsPending] = useState(false);
-  const isFormDisabled = isSubmitting || isPending;
+  const turnstile = useTurnstile();
+  const isFormDisabled = isSubmitting || isPending || !turnstile.isValid;
   return (
     <form
       className="max-w-lg"
       onSubmit={handleSubmit((data) => {
-        router.post(AccountController.profileDetails(), data, {
-          preserveScroll: true,
-          preserveState: 'errors',
-          onBefore() {
-            setIsPending(true);
+        if (!turnstile.skip_local && !turnstile.token) {
+          return;
+        }
+        router.post(
+          AccountController.profileDetails(),
+          {
+            ...data,
+            'turnstile-token': turnstile.token,
           },
-          onFinish() {
-            setIsPending(false);
+          {
+            preserveScroll: true,
+            preserveState: 'errors',
+            onBefore() {
+              setIsPending(true);
+            },
+            onFinish() {
+              setIsPending(false);
+              turnstile.reset();
+            },
+            onError(errors) {
+              setServerValidationErrors(errors, setError);
+            },
           },
-          onError(errors) {
-            setServerValidationErrors(errors, setError);
-          },
-        });
+        );
       })}
     >
       <FieldGroup className="gap-4">

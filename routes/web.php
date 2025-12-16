@@ -52,7 +52,8 @@ Route::middleware('auth')
             ->controller(AccountController::class)
             ->group(function () {
                 Route::get('/', 'index')->name('index');
-                Route::post('/profile-details', 'profileDetails')->name('profileDetails');
+                Route::post('/profile-details', 'profileDetails')->name('profileDetails')
+                    ->middleware(TurnstileMiddleware::class);
                 Route::post('/avatar', 'avatar')->name('avatar')
                     ->middleware(TurnstileMiddleware::class);
                 Route::delete('/avatar', 'deleteAvatar')->name('deleteAvatar')
