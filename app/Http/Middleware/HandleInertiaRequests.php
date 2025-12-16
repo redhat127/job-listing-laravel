@@ -50,7 +50,7 @@ class HandleInertiaRequests extends Middleware
             'user_type',
         ]);
 
-        $avatar = $user->avatar;
+        $avatar = $user?->avatar;
 
         if ($avatar) {
             $auth['avatar'] = asset('storage/'.$avatar);
