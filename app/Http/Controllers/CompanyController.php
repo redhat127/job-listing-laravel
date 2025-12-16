@@ -40,13 +40,7 @@ class CompanyController extends Controller
             'logo' => [
                 'bail',
                 'nullable',
-                File::types([
-                    'image/jpeg',
-                    'image/png',
-                    'image/gif',
-                    'image/webp',
-                    'image/avif',
-                ])
+                File::types(getValidImageTypes())
                     ->min('1kb')
                     ->max('2mb'),
             ],

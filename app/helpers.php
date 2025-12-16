@@ -14,3 +14,14 @@ function getJobExperienceLevels()
 {
     return ['entry', 'mid', 'senior', 'lead', 'executive'];
 }
+
+function getValidImageTypes()
+{
+    return [
+        'image/jpeg',
+        'image/png',
+        'image/gif',
+        'image/webp',
+        'image/avif',
+    ];
+}

@@ -36,20 +36,29 @@ class HandleInertiaRequests extends Middleware
      */
     public function share(Request $request): array
     {
+        $user = Auth::user();
+
+        $auth = $user?->only([
+            'id',
+            'name',
+            'username',
+            'email',
+            'email_verified_at',
+            'created_at',
+            'updated_at',
+            'onboarding_completed',
+            'user_type',
+        ]);
+
+        $avatar = $user->avatar;
+
+        if ($avatar) {
+            $auth['avatar'] = asset('storage/'.$avatar);
+        }
+
         return [
             ...parent::share($request),
-            'auth' => Auth::user()?->only([
-                'id',
-                'name',
-                'username',
-                'email',
-                'email_verified_at',
-                'created_at',
-                'updated_at',
-                'avatar',
-                'onboarding_completed',
-                'user_type',
-            ]),
+            'auth' => $auth,
             'flashMessage' => $request->session()->get('flashMessage'),
         ];
     }
