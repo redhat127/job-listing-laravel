@@ -9,6 +9,7 @@
 @theme {
   --font-inter: 'Inter Variable', sans-serif;
   --breakpoint-xs: 36rem;
+  --breakpoint-2xs: 30rem;
 }
 
 @source '../views';

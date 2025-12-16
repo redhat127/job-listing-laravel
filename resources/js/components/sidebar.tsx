@@ -29,7 +29,7 @@ export const Sidebar = () => {
   }, []);
   return (
     <div
-      className={cn('fixed left-0 z-50 flex h-full flex-col items-center gap-4 border-r bg-white p-4', {
+      className={cn('fixed left-0 z-50 flex h-full flex-col items-center gap-4 border-r bg-white p-4 dark:bg-black', {
         'w-18': isCollapsed,
         'w-64': !isCollapsed,
       })}
@@ -67,7 +67,7 @@ const SidebarMenus = ({ isCollapsed }: { isCollapsed: boolean }) => {
   const isOnboardingCompleted = auth && auth.onboarding_completed;
   const isUserTypeCompany = isOnboardingCompleted && auth.user_type === 'company';
   return (
-    <div className="scrollbar-none max-h-screen flex-1 overflow-auto pb-16">
+    <div className="scrollbar-none max-h-[calc(100vh-12.5rem)] flex-1 overflow-auto pb-16">
       {isCollapsed && (
         <ul className="flex flex-col gap-2">
           <SidebarCollapsedMenuItem title="Home" icon={<Home />} href={home.url()} />

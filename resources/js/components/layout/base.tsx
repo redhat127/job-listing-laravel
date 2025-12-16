@@ -8,6 +8,7 @@ import { BriefcaseBusiness } from 'lucide-react';
 import { useEffect, type ReactNode } from 'react';
 import { toast } from 'sonner';
 import { Sidebar } from '../sidebar';
+import { ToggleTheme } from '../toggle-theme';
 import { Button } from '../ui/button';
 import { Toaster } from '../ui/sonner';
 import { UserDropdown } from '../user-dropdown';
@@ -26,18 +27,23 @@ export const BaseLayout = ({ head, children }: { head?: { title?: string; childr
   return (
     <>
       {head && <Head {...head} />}
-      <header className="fixed inset-x-0 top-0 z-50 flex items-center justify-between border-b bg-white p-4 px-8">
-        <Link href={home()} className="flex items-center gap-1.5 text-xl font-bold text-sky-600 xs:text-2xl">
-          <BriefcaseBusiness className="size-5 xs:size-auto" />
-          Job <span className="text-black">Listing</span>
+      <header className="fixed inset-x-0 top-0 z-50 flex items-center justify-between border-b bg-white p-4 px-8 dark:bg-black">
+        <Link href={home()} className="flex items-center gap-1.5 font-bold text-sky-600">
+          <BriefcaseBusiness className="hidden 2xs:inline-block" />
+          <div className="text-2xl">
+            Job <span className="text-black dark:text-white">Listing</span>
+          </div>
         </Link>
-        {!auth ? (
-          <Button asChild>
-            <Link href={login.get()}>Login</Link>
-          </Button>
-        ) : (
-          <UserDropdown auth={auth} />
-        )}
+        <div className="flex items-center gap-2">
+          {!auth ? (
+            <Button asChild className="hidden 2xs:inline-block">
+              <Link href={login.get()}>Login</Link>
+            </Button>
+          ) : (
+            <UserDropdown auth={auth} />
+          )}
+          <ToggleTheme />
+        </div>
       </header>
       <Sidebar />
       <main className="ml-16 min-h-full px-8 pt-20 pb-10">
