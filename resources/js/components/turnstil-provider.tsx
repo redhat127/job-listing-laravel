@@ -44,7 +44,7 @@ export const TurnstileProvider = ({ children, containerIncluded = false }: { chi
       }
       const widgetId = window.turnstile.render('#turnstile-container', {
         sitekey: clientEvn.VITE_TURNSTILE_SITE_KEY as string,
-        theme: 'light',
+        theme: 'auto',
         size: 'flexible',
         callback(token) {
           setState((prev) => ({ ...prev, token, isValid: true }));

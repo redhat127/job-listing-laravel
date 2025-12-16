@@ -38,7 +38,7 @@ declare global {
         id: string,
         args: {
           sitekey: string;
-          theme?: 'auth' | 'dark' | 'light';
+          theme?: 'auto' | 'dark' | 'light';
           size?: 'normal' | 'flexible' | 'compact';
           callback(token: string): void;
           'error-callback': () => void;
