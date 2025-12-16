@@ -1,5 +1,6 @@
 import { useAuth } from '@/hooks/use-auth';
 import { useFlashMessage } from '@/hooks/use-flash-message';
+import { clientEvn } from '@/lib/env';
 import { generateTitle } from '@/lib/utils';
 import { home } from '@/routes';
 import login from '@/routes/login';
@@ -28,11 +29,9 @@ export const BaseLayout = ({ head, children }: { head?: { title?: string; childr
     <>
       {head && <Head {...head} />}
       <header className="fixed inset-x-0 top-0 z-50 flex items-center justify-between border-b bg-white p-4 px-8 dark:bg-black">
-        <Link href={home()} className="flex items-center gap-1.5 font-bold text-sky-600">
+        <Link href={home()} className="flex items-center gap-1.5 font-bold text-sky-600 dark:text-sky-500">
           <BriefcaseBusiness className="hidden 2xs:inline-block" />
-          <div className="text-2xl">
-            Job <span className="text-black dark:text-white">Listing</span>
-          </div>
+          <div className="text-2xl">{clientEvn.VITE_APP_NAME}</div>
         </Link>
         <div className="flex items-center gap-2">
           {!auth ? (
